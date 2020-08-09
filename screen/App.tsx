@@ -6,7 +6,7 @@
  * @flow strict-local
  */
 
-import React, { Props } from 'react';
+import React from 'react';
 import {
   SafeAreaView,
   StyleSheet,
@@ -18,11 +18,7 @@ import {
 } from 'react-native';
 
 import {
-  Header,
-  LearnMoreLinks,
   Colors,
-  DebugInstructions,
-  ReloadInstructions,
 } from 'react-native/Libraries/NewAppScreen';
 
 import ReactNativeBiometrics from 'react-native-biometrics'
@@ -168,6 +164,21 @@ class App extends React.Component<Props, State> {
   }
 
   private createSignature () {
+    let isKey:boolean = false;
+
+    ReactNativeBiometrics.biometricKeysExist().then((resultObject) => {
+      const { keysExist } = resultObject
+
+      if (keysExist) {
+        isKey = true;
+      }
+    })
+
+    if (!isKey) {
+      Toast.show ('Keys do not exist or were deleted');
+      return;
+    }
+
     let epochTimeSeconds = Math.round((new Date()).getTime() / 1000).toString()
     let payload = epochTimeSeconds + 'some message'
     
@@ -201,17 +212,6 @@ class App extends React.Component<Props, State> {
   }
 
   async componentDidMount () {
-    // const { biometryType } = await ReactNativeBiometrics.isSensorAvailable()
-
-    // if (biometryType === ReactNativeBiometrics.TouchID) {
-    //   console.log('TouchID is supported')
-    // } else if (biometryType === ReactNativeBiometrics.FaceID) {
-    //   console.log('FaceID is supported')
-    // } else if (biometryType === ReactNativeBiometrics.Biometrics) {
-    //   console.log('Biometrics is supported')
-    // } else {
-    //   console.log('Biometrics not supported')
-    // }
   }
   
 };
