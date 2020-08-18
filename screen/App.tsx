@@ -8,6 +8,13 @@
 
 import React, { Props } from 'react';
 import {
+  Colors,
+} from 'react-native/Libraries/NewAppScreen';
+
+import ReactNativeBiometrics from 'react-native-biometrics'
+import Toast from 'react-native-simple-toast';
+
+import {
   SafeAreaView,
   StyleSheet,
   ScrollView,
@@ -18,12 +25,31 @@ import {
   NativeModules
 } from 'react-native';
 
-import {
-  Colors,
-} from 'react-native/Libraries/NewAppScreen';
+const Aes = NativeModules.Aes
 
-import ReactNativeBiometrics from 'react-native-biometrics'
-import Toast from 'react-native-simple-toast';
+const generateKey = (password: string, salt: string, cost: number, length: number) => Aes.pbkdf2(password, salt, cost, length)
+const encryptData = (text: string, key: any) => {
+    return Aes.randomKey(16).then((iv: any) => {
+        return Aes.encrypt(text, key, iv).then((cipher: any) => ({
+            cipher,
+            iv,
+        }))
+    })
+}
+const encryptDataIV = (text: string, key: any, iv:any) => {
+  return Aes.encrypt(text, key, iv).then((cipher: any) => ({
+    cipher,
+    iv,
+  }))      
+}
+const decryptData = (encryptedData: { cipher: any; iv: any; }, key: any) => Aes.decrypt(encryptedData.cipher, key, encryptedData.iv)
+
+const iv_string = '0123456789abcdef0123456789abcdef';
+
+let encrypt_key:any = "";
+let encrypt_string:any = "";
+let plain_string:any = "1234567890";
+let encrypt_iv:any = "";
 
 class App extends React.Component<Props> {
   constructor(props: Readonly<{}>) {
@@ -36,8 +62,6 @@ class App extends React.Component<Props> {
   };
 
   render () {
-    console.log ("render");
-
     return (
       <>
         <StatusBar barStyle="dark-content" />
@@ -49,6 +73,27 @@ class App extends React.Component<Props> {
               <View style={styles.sectionContainer}>
                 <Text style={styles.sectionTitle}>MD5 메시지 다이제스트</Text>
                 <Text style={styles.sectionDescription}>{this.getMD5("1234")}</Text>
+              </View>
+
+              <View style={styles.sectionContainer}>
+                <Text style={styles.sectionTitle}>AES256</Text>
+                <Button
+                  onPress={this.AESKey.bind(this)}
+                  title="암호키 생성"
+                  color="#3394ee"
+                />
+
+                <Button
+                  onPress={this.AESEncrypt.bind(this)}
+                  title="암/복호화"
+                  color="#3394ee"
+                />
+
+                <Button
+                  onPress={this.AESDecrypt.bind(this)}
+                  title="복호화"
+                  color="#3394ee"
+                />
               </View>
 
               <View style={styles.sectionContainer}>
@@ -112,11 +157,61 @@ class App extends React.Component<Props> {
     );
   };
 
+  private AESKey () {
+    try {
+      generateKey('nixstory@gmail.com', 'SALT', 1000, 256).then((key: any) => {
+        encrypt_key = key;
+
+        console.log ("encrypt key : " + encrypt_key);
+      })
+    } catch (e) {
+        console.error(e)
+    }    
+  }
+
+  private AESEncrypt () {
+    const key = encrypt_key;
+
+    try {
+      encryptDataIV(plain_string, key, iv_string).then(({ cipher, iv }) => {
+        encrypt_iv = iv;
+        encrypt_string = cipher;
+        
+        console.log ("[encrypt] plain text : " + plain_string);
+        console.log ("[encrypt] encrypt key : " + encrypt_key);
+        console.log ("[encrypt] iv #1 : " + iv_string);
+        console.log ("[encrypt] iv #2 : " + encrypt_iv);
+        console.log ("[encrypt] iv length : " + iv_string.length);
+        
+        console.log ("[encrypt] encrypt text : " + encrypt_string);
+      }).catch((error: any) => {})
+    } catch (e) {
+        console.error(e)
+    }
+  }
+
+  private async AESDecrypt () {
+    const key = encrypt_key;
+    const iv = encrypt_iv;
+    const cipher = encrypt_string;
+
+    console.log ("[decrypt] encrypt text : " + encrypt_string);
+    console.log ("[decrypt] encrypt key : " + encrypt_key);
+    console.log ("[decrypt] iv : " + encrypt_iv);
+
+    try {
+      var decrypt_string = await decryptData({ cipher, iv }, key);
+
+      console.log ("plain text : " + decrypt_string);
+    } catch (e) {
+        console.error(e)
+    }
+  }
+  
   private getMD5 (plain:string) {
     var md5 = require('md5');
     const hash_message = md5(plain);
 
-    console.log("hash_message : " + hash_message);
     return hash_message;
   }
 

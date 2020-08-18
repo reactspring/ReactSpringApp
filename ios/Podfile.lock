@@ -236,6 +236,8 @@ PODS:
     - React-cxxreact (= 0.63.2)
     - React-jsi (= 0.63.2)
   - React-jsinspector (0.63.2)
+  - react-native-aes-cipher (1.0.0):
+    - React
   - react-native-biometrics (2.1.4):
     - React
   - react-native-fingerprint-scanner (6.0.0):
@@ -345,6 +347,7 @@ DEPENDENCIES:
   - React-jsi (from `../node_modules/react-native/ReactCommon/jsi`)
   - React-jsiexecutor (from `../node_modules/react-native/ReactCommon/jsiexecutor`)
   - React-jsinspector (from `../node_modules/react-native/ReactCommon/jsinspector`)
+  - react-native-aes-cipher (from `../node_modules/react-native-aes-cipher`)
   - react-native-biometrics (from `../node_modules/react-native-biometrics`)
   - react-native-fingerprint-scanner (from `../node_modules/react-native-fingerprint-scanner`)
   - react-native-simple-toast (from `../node_modules/react-native-simple-toast`)
@@ -407,6 +410,8 @@ EXTERNAL SOURCES:
     :path: "../node_modules/react-native/ReactCommon/jsiexecutor"
   React-jsinspector:
     :path: "../node_modules/react-native/ReactCommon/jsinspector"
+  react-native-aes-cipher:
+    :path: "../node_modules/react-native-aes-cipher"
   react-native-biometrics:
     :path: "../node_modules/react-native-biometrics"
   react-native-fingerprint-scanner:
@@ -463,6 +468,7 @@ SPEC CHECKSUMS:
   React-jsi: 54245e1d5f4b690dec614a73a3795964eeef13a8
   React-jsiexecutor: 8ca588cc921e70590820ce72b8789b02c67cce38
   React-jsinspector: b14e62ebe7a66e9231e9581279909f2fc3db6606
+  react-native-aes-cipher: 3e22250be974112902bbf941da411449f60ae337
   react-native-biometrics: 9d3306e5d29c3bc4e6a3c912d759a94e76a2f683
   react-native-fingerprint-scanner: c68136ca57e3704d7bdf5faa554ea535ce15b1d0
   react-native-simple-toast: a3a8e9033a549c11741debe875e54698cc4c0dd7
