@@ -6,7 +6,7 @@
  * @flow strict-local
  */
 
-import React from 'react';
+import React, { Props } from 'react';
 import {
   SafeAreaView,
   StyleSheet,
@@ -14,7 +14,8 @@ import {
   View,
   Text,
   StatusBar,
-  Button
+  Button,
+  NativeModules
 } from 'react-native';
 
 import {
@@ -24,22 +25,19 @@ import {
 import ReactNativeBiometrics from 'react-native-biometrics'
 import Toast from 'react-native-simple-toast';
 
-interface Props {}
-interface State {}
-
-let public_key:string = "";
-
-class App extends React.Component<Props, State> {
-  constructor(props: Readonly<Props>) {
+class App extends React.Component<Props> {
+  constructor(props: Readonly<{}>) {
     super(props);
-
-    this.state = {
-      errorMessageLegacy: undefined,
-      biometricLegacy: undefined
-    };
   }
-  
+
+  state = {
+    isKey: false,
+    public_key: ""
+  };
+
   render () {
+    console.log ("render");
+
     return (
       <>
         <StatusBar barStyle="dark-content" />
@@ -49,55 +47,63 @@ class App extends React.Component<Props, State> {
             style={styles.scrollView}>
             <View style={styles.body}>
               <View style={styles.sectionContainer}>
-                <Text style={styles.sectionTitle}>React Native 생체인증</Text>
+                <Text style={styles.sectionTitle}>MD5 메시지 다이제스트</Text>
+                <Text style={styles.sectionDescription}>{this.getMD5("1234")}</Text>
               </View>
+
               <View style={styles.sectionContainer}>
+                <Text style={styles.sectionTitle}>React Native 생체인증</Text>
+                <View style={{ width: '100%', height: 1, backgroundColor: '#fff', padding:5 }} />
                 <Button
-                  onPress={this.checkFingerprint}
+                  onPress={this.checkFingerprint.bind(this)}
                   title="생체인증 지원여부 확인"
                   color="#3394ee"
                   accessibilityLabel=""
                 />
-                <View style={{ width: '100%', height: 1, backgroundColor: '#ddd', padding:5 }} />
+                <View style={{ width: '100%', height: 1, backgroundColor: '#fff', padding:5 }} />
 
                 <Button
-                  onPress={this.biometricKeysExist}
+                  onPress={this.biometricKeysExist.bind(this)}
                   title="키존재 여부 확인"
                   color="#3394ee"
                   accessibilityLabel=""
                 />
-                <View style={{ width: '100%', height: 1, backgroundColor: '#ddd', padding:5 }} />
+                <View style={{ width: '100%', height: 1, backgroundColor: '#fff', padding:5 }} />
 
                 <Button
-                  onPress={this.createKeys}
+                  onPress={this.createKeys.bind(this)}
                   title="RSA 2048 키 생성"
                   color="#3394ee"
                   accessibilityLabel=""
                 />   
-                <View style={{ width: '100%', height: 1, backgroundColor: '#ddd', padding:5 }} />
+                <View style={{ width: '100%', height: 1, backgroundColor: '#fff', padding:5 }} />
 
                 <Button
-                  onPress={this.deleteKeys}
+                  onPress={this.deleteKeys.bind(this)}
                   title="RSA 2048 키 삭제"
                   color="#3394ee"
                   accessibilityLabel=""
                 />               
-                <View style={{ width: '100%', height: 1, backgroundColor: '#ddd', padding:5 }} />
+                <View style={{ width: '100%', height: 1, backgroundColor: '#fff', padding:5 }} />
 
                 <Button
-                  onPress={this.createSignature}
+                  onPress={this.createSignature.bind(this)}
                   title="전자서명"
                   color="#3394ee"
                   accessibilityLabel=""
                 />                  
-                <View style={{ width: '100%', height: 1, backgroundColor: '#ddd', padding:5 }} />
+                <View style={{ width: '100%', height: 1, backgroundColor: '#fff', padding:5 }} />
 
                 <Button
-                  onPress={this.simplePrompt}
+                  onPress={this.simplePrompt.bind(this)}
                   title="생체인증"
                   color="#3394ee"
                   accessibilityLabel=""
                 />                  
+              </View>
+              <View style={styles.sectionContainer}>
+                <Text style={styles.sectionTitle}>RSA 2048 공개키</Text>
+                <Text style={styles.sectionDescription}>{this.state.public_key}</Text>
               </View>
             </View>
           </ScrollView>
@@ -142,12 +148,14 @@ class App extends React.Component<Props, State> {
     })
   }
 
-  private createKeys () {
-    ReactNativeBiometrics.createKeys().then((resultObject) => {
+  private async createKeys () {
+    await ReactNativeBiometrics.createKeys().then((resultObject) => {
       const { publicKey } = resultObject
-      Toast.show (publicKey)
       // sendPublicKeyToServer(publicKey)
-      public_key = publicKey;
+
+      Toast.show (publicKey);
+      this.state.isKey = true;
+      this.setState ({isKey:true, public_key:publicKey});
     })    
   }
 
@@ -157,6 +165,7 @@ class App extends React.Component<Props, State> {
   
       if (keysDeleted) {
         Toast.show ('Successful deletion')
+        this.setState ({isKey:false, public_key:""});
       } else {
         Toast.show ('Unsuccessful deletion because there were no keys to delete')
       }
@@ -164,21 +173,6 @@ class App extends React.Component<Props, State> {
   }
 
   private createSignature () {
-    let isKey:boolean = false;
-
-    ReactNativeBiometrics.biometricKeysExist().then((resultObject) => {
-      const { keysExist } = resultObject
-
-      if (keysExist) {
-        isKey = true;
-      }
-    })
-
-    if (!isKey) {
-      Toast.show ('Keys do not exist or were deleted');
-      return;
-    }
-
     let epochTimeSeconds = Math.round((new Date()).getTime() / 1000).toString()
     let payload = epochTimeSeconds + 'some message'
     
@@ -212,6 +206,15 @@ class App extends React.Component<Props, State> {
   }
 
   async componentDidMount () {
+    ReactNativeBiometrics.biometricKeysExist().then((resultObject) => {
+      const { keysExist } = resultObject
+  
+      if (keysExist) {
+        this.setState ({isKey:true, public_key:"Keys exist"});
+      } else {
+        this.setState ({isKey:false, public_key:"Keys do not exist or were deleted"});
+      }
+    })
   }
   
 };
@@ -240,7 +243,7 @@ const styles = StyleSheet.create({
     marginTop: 8,
     fontSize: 15,
     fontWeight: '400',
-    color: Colors.dark,
+    color: '#dedede'
   },
   highlight: {
     fontWeight: '700',
