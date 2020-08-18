@@ -82,12 +82,14 @@ class App extends React.Component<Props> {
                   title="암호키 생성"
                   color="#3394ee"
                 />
+                <View style={{ width: '100%', height: 1, backgroundColor: '#fff', padding:5 }} />
 
                 <Button
                   onPress={this.AESEncrypt.bind(this)}
                   title="암/복호화"
                   color="#3394ee"
                 />
+                <View style={{ width: '100%', height: 1, backgroundColor: '#fff', padding:5 }} />
 
                 <Button
                   onPress={this.AESDecrypt.bind(this)}
@@ -193,15 +195,18 @@ class App extends React.Component<Props> {
     const key = encrypt_key;
     const iv = encrypt_iv;
     const cipher = encrypt_string;
-
-    console.log ("[decrypt] encrypt text : " + encrypt_string);
-    console.log ("[decrypt] encrypt key : " + encrypt_key);
-    console.log ("[decrypt] iv : " + encrypt_iv);
+    // const key = "591825e3a4f2c9b8f73eb963c77ad160d4802ad7aadc179b066275bcb9d9cfd2";
+    // const iv = "0123456789abcdef0123456789abcdef";
+    // const cipher = "hg7zoTXoD/xbcvj64M0iYg==";
 
     try {
       var decrypt_string = await decryptData({ cipher, iv }, key);
 
-      console.log ("plain text : " + decrypt_string);
+      console.log ("[decrypt] encrypt text : " + cipher);
+      console.log ("[decrypt] encrypt key : " + key);
+      console.log ("[decrypt] iv : " + iv);
+  
+      console.log ("[decrypt] plain text : " + decrypt_string);
     } catch (e) {
         console.error(e)
     }
