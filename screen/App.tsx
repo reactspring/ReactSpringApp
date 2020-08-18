@@ -181,7 +181,6 @@ class App extends React.Component<Props> {
         console.log ("[encrypt] encrypt key : " + encrypt_key);
         console.log ("[encrypt] iv #1 : " + iv_string);
         console.log ("[encrypt] iv #2 : " + encrypt_iv);
-        console.log ("[encrypt] iv length : " + iv_string.length);
         
         console.log ("[encrypt] encrypt text : " + encrypt_string);
       }).catch((error: any) => {})
