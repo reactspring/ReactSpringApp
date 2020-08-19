@@ -25,24 +25,24 @@ import {
   NativeModules
 } from 'react-native';
 
-const Aes = NativeModules.Aes
+const AesCipher = NativeModules.Aes
 
-const generateKey = (password: string, salt: string, cost: number, length: number) => Aes.pbkdf2(password, salt, cost, length)
+const generateKey = (password: string, salt: string, cost: number, length: number) => AesCipher.pbkdf2(password, salt, cost, length)
 const encryptData = (text: string, key: any) => {
-    return Aes.randomKey(16).then((iv: any) => {
-        return Aes.encrypt(text, key, iv).then((cipher: any) => ({
+    return AesCipher.randomKey(16).then((iv: any) => {
+        return AesCipher.encrypt(text, key, iv).then((cipher: any) => ({
             cipher,
             iv,
         }))
     })
 }
 const encryptDataIV = (text: string, key: any, iv:any) => {
-  return Aes.encrypt(text, key, iv).then((cipher: any) => ({
+  return AesCipher.encrypt(text, key, iv).then((cipher: any) => ({
     cipher,
     iv,
   }))      
 }
-const decryptData = (encryptedData: { cipher: any; iv: any; }, key: any) => Aes.decrypt(encryptedData.cipher, key, encryptedData.iv)
+const decryptData = (encryptedData: { cipher: any; iv: any; }, key: any) => AesCipher.decrypt(encryptedData.cipher, key, encryptedData.iv)
 
 const iv_string = '0123456789abcdef0123456789abcdef';
 
@@ -181,8 +181,7 @@ class App extends React.Component<Props> {
         
         console.log ("[encrypt] plain text : " + plain_string);
         console.log ("[encrypt] encrypt key : " + encrypt_key);
-        console.log ("[encrypt] iv #1 : " + iv_string);
-        console.log ("[encrypt] iv #2 : " + encrypt_iv);
+        console.log ("[encrypt] iv : " + encrypt_iv);
         
         console.log ("[encrypt] encrypt text : " + encrypt_string);
       }).catch((error: any) => {})
@@ -195,9 +194,6 @@ class App extends React.Component<Props> {
     const key = encrypt_key;
     const iv = encrypt_iv;
     const cipher = encrypt_string;
-    // const key = "591825e3a4f2c9b8f73eb963c77ad160d4802ad7aadc179b066275bcb9d9cfd2";
-    // const iv = "0123456789abcdef0123456789abcdef";
-    // const cipher = "hg7zoTXoD/xbcvj64M0iYg==";
 
     try {
       var decrypt_string = await decryptData({ cipher, iv }, key);
