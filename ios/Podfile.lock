@@ -242,6 +242,10 @@ PODS:
     - React
   - react-native-fingerprint-scanner (6.0.0):
     - React
+  - react-native-md-hash (1.0.2):
+    - React
+  - react-native-sha-hash (0.9.3):
+    - React
   - react-native-simple-toast (1.1.2):
     - React
     - Toast (~> 4.0.0)
@@ -350,6 +354,8 @@ DEPENDENCIES:
   - react-native-aes-cipher (from `../node_modules/react-native-aes-cipher`)
   - react-native-biometrics (from `../node_modules/react-native-biometrics`)
   - react-native-fingerprint-scanner (from `../node_modules/react-native-fingerprint-scanner`)
+  - react-native-md-hash (from `../node_modules/react-native-md-hash`)
+  - react-native-sha-hash (from `../node_modules/react-native-sha-hash`)
   - react-native-simple-toast (from `../node_modules/react-native-simple-toast`)
   - React-RCTActionSheet (from `../node_modules/react-native/Libraries/ActionSheetIOS`)
   - React-RCTAnimation (from `../node_modules/react-native/Libraries/NativeAnimation`)
@@ -416,6 +422,10 @@ EXTERNAL SOURCES:
     :path: "../node_modules/react-native-biometrics"
   react-native-fingerprint-scanner:
     :path: "../node_modules/react-native-fingerprint-scanner"
+  react-native-md-hash:
+    :path: "../node_modules/react-native-md-hash"
+  react-native-sha-hash:
+    :path: "../node_modules/react-native-sha-hash"
   react-native-simple-toast:
     :path: "../node_modules/react-native-simple-toast"
   React-RCTActionSheet:
@@ -471,6 +481,8 @@ SPEC CHECKSUMS:
   react-native-aes-cipher: 3e22250be974112902bbf941da411449f60ae337
   react-native-biometrics: 9d3306e5d29c3bc4e6a3c912d759a94e76a2f683
   react-native-fingerprint-scanner: c68136ca57e3704d7bdf5faa554ea535ce15b1d0
+  react-native-md-hash: ef6d935c02e434d0c92ae0d3952e6ef7c69777a2
+  react-native-sha-hash: edf8dab818d9787836a1792b8e9ce05f444f0228
   react-native-simple-toast: a3a8e9033a549c11741debe875e54698cc4c0dd7
   React-RCTActionSheet: 910163b6b09685a35c4ebbc52b66d1bfbbe39fc5
   React-RCTAnimation: 9a883bbe1e9d2e158d4fb53765ed64c8dc2200c6

@@ -26,6 +26,8 @@ import {
 } from 'react-native';
 
 const AesCipher = NativeModules.Aes
+const SHA = NativeModules.Sha
+const MD = NativeModules.Md
 
 const generateKey = (password: string, salt: string, cost: number, length: number) => AesCipher.pbkdf2(password, salt, cost, length)
 const encryptData = (text: string, key: any) => {
@@ -70,10 +72,6 @@ class App extends React.Component<Props> {
             contentInsetAdjustmentBehavior="automatic"
             style={styles.scrollView}>
             <View style={styles.body}>
-              <View style={styles.sectionContainer}>
-                <Text style={styles.sectionTitle}>MD5 메시지 다이제스트</Text>
-                <Text style={styles.sectionDescription}>{this.getMD5("1234")}</Text>
-              </View>
 
               <View style={styles.sectionContainer}>
                 <Text style={styles.sectionTitle}>AES256</Text>
@@ -97,6 +95,45 @@ class App extends React.Component<Props> {
                   color="#3394ee"
                 />
               </View>
+
+              <View style={styles.sectionContainer}>
+                <Text style={styles.sectionTitle}>SHA</Text>
+                <Button
+                  onPress={this.sha1.bind(this)}
+                  title="SHA1 Hash"
+                  color="#3394ee"
+                />
+                <View style={{ width: '100%', height: 1, backgroundColor: '#fff', padding:5 }} />
+
+                <Button
+                  onPress={this.sha256.bind(this)}
+                  title="SHA256 Hash"
+                  color="#3394ee"
+                />
+                <View style={{ width: '100%', height: 1, backgroundColor: '#fff', padding:5 }} />
+
+                <Button
+                  onPress={this.sha512.bind(this)}
+                  title="SHA512 Hash"
+                  color="#3394ee"
+                />
+                <View style={{ width: '100%', height: 1, backgroundColor: '#fff', padding:5 }} />
+
+                <Button
+                  onPress={this.hmac256.bind(this)}
+                  title="HMAC_SHA256 Hash"
+                  color="#3394ee"
+                />
+              </View>     
+
+              <View style={styles.sectionContainer}>
+                <Text style={styles.sectionTitle}>MD5</Text>
+                <Button
+                  onPress={this.md5.bind(this)}
+                  title="MD5 Hash"
+                  color="#3394ee"
+                />
+              </View>                           
 
               <View style={styles.sectionContainer}>
                 <Text style={styles.sectionTitle}>React Native 생체인증</Text>
@@ -159,6 +196,68 @@ class App extends React.Component<Props> {
     );
   };
 
+  private md5 () {
+    const plain_string:string = "1234567890";
+
+    try {
+      MD.md5(plain_string).then((hash: any) => {
+        console.log ("MD5 hash : " + hash);
+      })
+    } catch (e) {
+        console.error(e)
+    }  
+  }
+
+  private sha1 () {
+    const plain_string:string = "1234567890";
+
+    try {
+      SHA.sha1(plain_string).then((hash: any) => {
+        console.log ("SHA1 hash : " + hash);
+      })
+    } catch (e) {
+        console.error(e)
+    }   
+  }
+
+  private sha256 () {
+    const plain_string:string = "1234567890";
+
+    try {
+      SHA.sha256(plain_string).then((hash: any) => {
+        console.log ("SHA256 hash : " + hash);
+      })
+    } catch (e) {
+        console.error(e)
+    }  
+  }
+
+  private sha512 () {
+    const plain_string:string = "1234567890";
+
+    try {
+      SHA.sha512(plain_string).then((hash: any) => {
+        console.log ("SHA512 hash : " + hash);
+      })
+    } catch (e) {
+        console.error(e)
+    }  
+  }
+
+  private hmac256 () {
+    const plain_string:string = "1234567890";
+    const key:string = "1234567890123456"
+
+    try {
+      SHA.hmac256(plain_string, key).then((hash: any) => {
+        console.log ("HMAC SHA256 key : " + key);
+        console.log ("HMAC SHA256 hash : " + hash);
+      })
+    } catch (e) {
+        console.error(e)
+    }  
+  }
+
   private AESKey () {
     try {
       generateKey('nixstory@gmail.com', 'SALT', 1000, 256).then((key: any) => {
@@ -208,13 +307,6 @@ class App extends React.Component<Props> {
     }
   }
   
-  private getMD5 (plain:string) {
-    var md5 = require('md5');
-    const hash_message = md5(plain);
-
-    return hash_message;
-  }
-
   private checkFingerprint () {
     ReactNativeBiometrics.isSensorAvailable().then((resultObject) => {
       const { available, biometryType } = resultObject
