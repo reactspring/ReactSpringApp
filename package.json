@@ -12,7 +12,7 @@
   "dependencies": {
     "react": "16.13.1",
     "react-native": "0.63.2",
-    "react-native-aes-cipher": "^1.0.4",
+    "react-native-aes-cipher": "^1.0.9",
     "react-native-biometrics": "^2.1.4",
     "react-native-fingerprint-scanner": "^6.0.0",
     "react-native-md-hash": "^1.0.2",
