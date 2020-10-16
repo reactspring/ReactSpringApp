@@ -209,7 +209,7 @@ class App extends React.Component<Props> {
   }
 
   private sha1 () {
-    const plain_string:string = "1234567890";
+    const plain_string:string = "2345678901";
 
     try {
       SHA.sha1(plain_string).then((hash: any) => {
